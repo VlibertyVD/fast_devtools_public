@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.fast_devtools</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Fast DevTools" string="Fast DevTools" name="fast_devtools" groups="base.group_system">
+                    
+                    <!-- Section 1: Debugger -->
+                    <block title="Debugger" name="fast_devtools_debugger">
+                        <setting string="Debug Button" help="Show debug toggle in the top systray">
+                            <field name="enable_systray_debug"/>
+                        </setting>
+                    </block>
+
+                    <!-- Section 2: Updater -->
+                    <block title="Updater" name="fast_devtools_updater">
+                        <setting string="Updater Button" help="Show module updater in the top systray">
+                            <field name="enable_systray_updater"/>
+                        </setting>
+
+                        <!-- Profile Configuration (Visible only when Updater is enabled) -->
+                        <setting string="Active Profile" help="Select the profile to execute when clicking the Update button" invisible="not enable_systray_updater">
+                            <field name="updater_profile_id" class="w-100" placeholder="Select a profile..."/>
+                            <div class="mt-2">
+                                <button type="action" name="%(fast_devtools.action_updater_profile)d" string="Manage Profiles" icon="oi-arrow-right" class="btn-link"/>
+                            </div>
+                        </setting>
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

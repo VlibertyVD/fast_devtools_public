@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Updater Icon -->
+    <t t-name="fast_devtools.SystrayUpdater" owl="1">
+        <div t-attf-class="o_systray_item d-flex align-items-center {{ !isVisible ? 'd-none' : '' }}" t-on-click="onUpdateClick">
+            <a role="button" class="nav-link px-2 d-flex align-items-center text-white">
+                <i class="fa fa-refresh me-1 text-white"/>
+                <span>Update</span>
+            </a>
+        </div>
+    </t>
+
+    <!-- Debug Checkbox -->
+    <t t-name="fast_devtools.SystrayDebug" owl="1">
+        <div t-attf-class="o_systray_item d-flex align-items-center {{ !isVisible ? 'd-none' : '' }}" t-on-click="toggleDebug">
+            <a role="button" class="nav-link px-2 d-flex align-items-center text-white">
+                <i t-attf-class="fa {{ isDebugActive ? 'fa-check-square-o text-success' : 'fa-square-o text-white' }} me-1"/>
+                <span>Debug</span>
+            </a>
+        </div>
+    </t>
+</templates>

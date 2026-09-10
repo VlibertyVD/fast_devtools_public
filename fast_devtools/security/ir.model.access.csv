@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_updater_profile,updater.profile,model_updater_profile,base.group_system,1,1,1,1
+access_updater_profile_line,updater.profile.line,model_updater_profile_line,base.group_system,1,1,1,1
