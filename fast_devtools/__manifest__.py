@@ -4,6 +4,8 @@
     'summary': 'Developer tools for Systray: Debug toggle and Module Updater',
     'category': 'Technical Tools',
     'depends': ['base', 'web'],
+    'author': 'Daniel Venegas',
+    'maintainer': 'Daniel Venegas',
     'data': [
         'security/ir.model.access.csv',
         
