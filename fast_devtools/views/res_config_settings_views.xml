@@ -6,23 +6,27 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Fast DevTools" string="Fast DevTools" name="fast_devtools" groups="base.group_system">
+                
+                <app id="fast_devtools" name="fast_devtools" string="Fast DevTools" groups="base.group_system">
                     
-                    <!-- Section 1: Debugger -->
                     <block title="Debugger" name="fast_devtools_debugger">
-                        <setting string="Debug Button" help="Show debug toggle in the top systray">
-                            <field name="enable_systray_debug"/>
+                        <setting help="Enable standard debug mode (?debug=1)">
+                            <field name="enable_debug_1"/>
+                        </setting>
+                        <setting help="Enable assets debug mode (?debug=assets)">
+                            <field name="enable_debug_assets"/>
+                        </setting>
+                        <setting help="Enable tests debug mode (?debug=assets,tests)">
+                            <field name="enable_debug_tests"/>
                         </setting>
                     </block>
 
-                    <!-- Section 2: Updater -->
                     <block title="Updater" name="fast_devtools_updater">
-                        <setting string="Updater Button" help="Show module updater in the top systray">
+                        <setting help="Show module updater in the top systray">
                             <field name="enable_systray_updater"/>
                         </setting>
 
-                        <!-- Profile Configuration (Visible only when Updater is enabled) -->
-                        <setting string="Active Profile" help="Select the profile to execute when clicking the Update button" invisible="not enable_systray_updater">
+                        <setting help="Select the profile to execute when clicking the Update button" invisible="not enable_systray_updater">
                             <field name="updater_profile_id" class="w-100" placeholder="Select a profile..."/>
                             <div class="mt-2">
                                 <button type="action" name="%(fast_devtools.action_updater_profile)d" string="Manage Profiles" icon="oi-arrow-right" class="btn-link"/>

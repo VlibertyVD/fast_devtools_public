@@ -6,7 +6,7 @@ class UpdaterProfile(models.Model):
 
     name = fields.Char(string="Profile Name", required=True)
     active = fields.Boolean(default=True)
-    module_line_ids = fields.One2many('updater.profile.line', 'profile_id', string="Modules to Update",  ondelete='cascade')
+    module_line_ids = fields.One2many('updater.profile.line', 'profile_id', string="Modules to Update",  ondelete='cascade', required=True)
 
     @api.model
     def trigger_systray_update(self):
