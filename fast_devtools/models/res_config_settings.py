@@ -28,18 +28,22 @@ class ResConfigSettings(models.TransientModel):
         string="Available Systray Profiles"
     )
 
-    # Save the selected profile IDs as a comma-separated string in system parameters
     def set_values(self):
         super().set_values()
         ids_str = ','.join(map(str, self.updater_profile_ids.ids))
         self.env['ir.config_parameter'].sudo().set_param('fast_devtools.active_profile_ids', ids_str)
 
-    # Retrieve the saved IDs to properly display them in the settings view
     @api.model
     def get_values(self):
         res = super().get_values()
         param = self.env['ir.config_parameter'].sudo().get_param('fast_devtools.active_profile_ids')
+        
         if param:
-            profile_ids = [int(x) for x in param.split(',') if x]
-            res.update(updater_profile_ids=[(6, 0, profile_ids)])
+            profile_ids = [int(x) for x in param.split(',') if x.isdigit()]
+            
+            existing_profiles = self.env['updater.profile'].sudo().browse(profile_ids).exists()
+            
+            # Update the field ONLY with valid, existing IDs
+            res.update(updater_profile_ids=[(6, 0, existing_profiles.ids)])
+            
         return res

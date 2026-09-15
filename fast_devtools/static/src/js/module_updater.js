@@ -1,7 +1,7 @@
 /** @odoo-module **/
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { Component, useState, onWillStart } from "@odoo/owl"; // Importamos useState y onWillStart
+import { Component, useState } from "@odoo/owl";
 import { session } from "@web/session";
 
 export class SystrayUpdater extends Component {
@@ -11,38 +11,33 @@ export class SystrayUpdater extends Component {
         
         this.state = useState({
             isOpen: false,
-            profiles: [],
-        });
-
-        onWillStart(async () => {
-            if (this.isVisible) {
-                this.state.profiles = await this.orm.searchRead(
-                    "updater.profile",
-                    [["active", "=", true]],
-                    ["id", "name"]
-                );
-            }
         });
     }
 
+    // Check if the updater feature is enabled in general settings
     get isVisible() {
         return session.fast_devtools ? session.fast_devtools.enable_updater : false;
+    }
+
+    get availableProfiles() {
+        return session.fast_devtools ? (session.fast_devtools.profiles || []) : [];
     }
 
     toggleDropdown() {
         this.state.isOpen = !this.state.isOpen;
     }
 
-    // Now we receive the ID coming from the template.
     async onUpdateClick(profileId) {
-        this.state.isOpen = false; 
+        // Close the dropdown menu immediately upon clicking
+        this.state.isOpen = false;
         
         try {
+            // Send the specific profileId to the backend execution method
             const result = await this.orm.call("updater.profile", "trigger_systray_update", [profileId]);
             
             if (result.status === 'error') {
                 this.notification.add(result.message, {
-                    title: "Updater",
+                    title: "Updater Error",
                     type: "danger",
                     sticky: false,
                 });
@@ -60,5 +55,4 @@ export class SystrayUpdater extends Component {
     }
 }
 SystrayUpdater.template = "fast_devtools.SystrayUpdater";
-
 registry.category("systray").add("fast_devtools.updater", { Component: SystrayUpdater }, { sequence: 100 });
