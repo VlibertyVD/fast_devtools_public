@@ -14,7 +14,6 @@ export class SystrayUpdater extends Component {
         });
     }
 
-    // Check if the updater feature is enabled in general settings
     get isVisible() {
         return session.fast_devtools ? session.fast_devtools.enable_updater : false;
     }
@@ -23,16 +22,23 @@ export class SystrayUpdater extends Component {
         return session.fast_devtools ? (session.fast_devtools.profiles || []) : [];
     }
 
-    toggleDropdown() {
-        this.state.isOpen = !this.state.isOpen;
+    // Smart handler for the main button click
+    async onMainClick() {
+        const profiles = this.availableProfiles;
+        
+        if (profiles.length === 1) {
+            // Only 1 profile: execute it directly, bypass dropdown
+            await this.onUpdateClick(profiles[0].id);
+        } else {
+            // 0 or multiple profiles: toggle the dropdown menu
+            this.state.isOpen = !this.state.isOpen;
+        }
     }
 
     async onUpdateClick(profileId) {
-        // Close the dropdown menu immediately upon clicking
-        this.state.isOpen = false;
+        this.state.isOpen = false; 
         
         try {
-            // Send the specific profileId to the backend execution method
             const result = await this.orm.call("updater.profile", "trigger_systray_update", [profileId]);
             
             if (result.status === 'error') {

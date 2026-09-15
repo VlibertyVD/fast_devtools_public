@@ -2,29 +2,27 @@
 <templates xml:space="preserve">
     
     <!-- Updater Icon (Unchanged, kept for completion) -->
-    <t t-name="fast_devtools.SystrayUpdater" owl="1">
+   <t t-name="fast_devtools.SystrayUpdater" owl="1">
         <div t-if="isVisible" class="o_systray_item d-flex align-items-center" style="position: relative;">
             
-            <!-- Main Button & Dropdown Toggle -->
-            <a role="button" class="nav-link px-2 d-flex align-items-center text-white" t-on-click="toggleDropdown">
+            <!-- Main Button: Now calls the smart onMainClick method -->
+            <a role="button" class="nav-link px-2 d-flex align-items-center text-white" t-on-click="onMainClick">
                 <i class="fa fa-refresh me-1 text-white"/>
                 <span>Update</span>
-                <!-- Show caret icon only if there are profiles available -->
-                <i t-if="availableProfiles.length > 0" class="fa fa-caret-down ms-1 text-white"/>
+                
+                <!-- Show caret ONLY if there is strictly MORE than 1 profile -->
+                <i t-if="availableProfiles.length > 1" class="fa fa-caret-down ms-1 text-white"/>
             </a>
             
             <!-- Dropdown Menu -->
             <div t-if="state.isOpen" class="dropdown-menu show" style="position: absolute; top: 100%; right: 0; min-width: 200px;">
                 
-                <!-- Fallback if no profiles are found in settings -->
                 <t t-if="availableProfiles.length === 0">
                     <span class="dropdown-item text-muted">No profiles configured in Settings</span>
                 </t>
                 
-                <!-- Iterate through the available profiles and render options -->
                 <t t-foreach="availableProfiles" t-as="profile" t-key="profile.id">
                     <a role="button" class="dropdown-item d-flex align-items-center" t-on-click="() => this.onUpdateClick(profile.id)">
-                        <i class="fa fa-fw fa-play text-primary me-2"/>
                         <t t-esc="profile.name"/>
                     </a>
                 </t>

@@ -27,7 +27,10 @@
                         </setting>
 
                         <setting help="Select the profile to execute when clicking the Update button" invisible="not enable_systray_updater">
-                            <field name="updater_profile_ids" class="w-100" placeholder="Select a profile..."/>
+                            <field name="updater_profile_ids" 
+                                    widget="many2many_tags" 
+                                    options="{'no_create': True, 'no_create_edit': True}" 
+                                    placeholder="Select profiles..."/>
                             <div class="mt-2">
                                 <button type="action" name="%(fast_devtools.action_updater_profile)d" string="Manage Profiles" icon="oi-arrow-right" class="btn-link"/>
                             </div>
