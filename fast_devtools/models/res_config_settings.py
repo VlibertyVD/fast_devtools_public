@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
@@ -22,8 +22,24 @@ class ResConfigSettings(models.TransientModel):
         string="Enable Updater Button",
         config_parameter='fast_devtools.enable_systray_updater'
     )
-    updater_profile_id = fields.Many2one(
+
+    updater_profile_ids = fields.Many2many(
         'updater.profile',
-        string="Profile to Execute",
-        config_parameter='fast_devtools.active_profile_id'
+        string="Available Systray Profiles"
     )
+
+    # Save the selected profile IDs as a comma-separated string in system parameters
+    def set_values(self):
+        super().set_values()
+        ids_str = ','.join(map(str, self.updater_profile_ids.ids))
+        self.env['ir.config_parameter'].sudo().set_param('fast_devtools.active_profile_ids', ids_str)
+
+    # Retrieve the saved IDs to properly display them in the settings view
+    @api.model
+    def get_values(self):
+        res = super().get_values()
+        param = self.env['ir.config_parameter'].sudo().get_param('fast_devtools.active_profile_ids')
+        if param:
+            profile_ids = [int(x) for x in param.split(',') if x]
+            res.update(updater_profile_ids=[(6, 0, profile_ids)])
+        return res

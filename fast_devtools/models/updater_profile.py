@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 class UpdaterProfile(models.Model):
     _name = 'updater.profile'
@@ -8,19 +9,19 @@ class UpdaterProfile(models.Model):
     active = fields.Boolean(default=True)
     module_line_ids = fields.One2many('updater.profile.line', 'profile_id', string="Modules to Update",  ondelete='cascade', required=True)
 
+    @api.constrains('module_line_ids')
+    def _check_module_lines(self):
+        for profile in self:
+            if not profile.module_line_ids:
+                raise ValidationError("You cannot create an empty profile. You must add at least one module.")
+
+    # 2. Trigger method now receives the specific profile_id chosen by the user
     @api.model
-    def trigger_systray_update(self):
-        # Fetch the ID saved globally in the system parameters
-        profile_id_str = self.env['ir.config_parameter'].sudo().get_param('fast_devtools.active_profile_id')
-        
-        if not profile_id_str:
-            return {'status': 'error', 'message': 'No profile assigned in General Settings.'}
-        
-        # Convert the saved string to integer and fetch the profile
-        profile = self.browse(int(profile_id_str))
+    def trigger_systray_update(self, profile_id):
+        profile = self.browse(int(profile_id))
         
         if not profile.exists():
-            return {'status': 'error', 'message': 'The assigned profile no longer exists.'}
+            return {'status': 'error', 'message': 'The selected profile no longer exists.'}
         
         modules = profile.module_line_ids.mapped('module_id')
         modules.button_immediate_upgrade()
