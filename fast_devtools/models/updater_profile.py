@@ -7,7 +7,7 @@ class UpdaterProfile(models.Model):
 
     name = fields.Char(string="Profile Name", required=True)
     active = fields.Boolean(default=True)
-    module_line_ids = fields.One2many('updater.profile.line', 'profile_id', string="Modules to Update",  ondelete='cascade', required=True)
+    module_line_ids = fields.One2many('updater.profile.line', 'profile_id', string="Modules to Update",  required=True)
 
     @api.constrains('module_line_ids')
     def _check_module_lines(self):
@@ -15,7 +15,6 @@ class UpdaterProfile(models.Model):
             if not profile.module_line_ids:
                 raise ValidationError("You cannot create an empty profile. You must add at least one module.")
 
-    # 2. Trigger method now receives the specific profile_id chosen by the user
     @api.model
     def trigger_systray_update(self, profile_id):
         profile = self.browse(int(profile_id))

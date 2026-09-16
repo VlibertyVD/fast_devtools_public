@@ -17,7 +17,6 @@ class IrHttp(models.AbstractModel):
         if param_profiles:
             profile_ids = [int(x) for x in param_profiles.split(',') if x]
             
-            # Fetch the actual profile records (ensuring they are still active)
             profiles = self.env['updater.profile'].sudo().search([
                 ('id', 'in', profile_ids),
                 ('active', '=', True)
@@ -34,5 +33,4 @@ class IrHttp(models.AbstractModel):
             'profiles': profile_list, 
         }
         
-        return result
         return result

@@ -1,15 +1,21 @@
 /** @odoo-module **/
 import { registry } from "@web/core/registry";
-import { Component, useState } from "@odoo/owl";
+import { Component, useState, useRef, useExternalListener } from "@odoo/owl";
 import { session } from "@web/session";
 
 export class SystrayDebugToggle extends Component {
     setup() {
-        // State to control the dropdown visibility
+        this.rootRef = useRef("root");
         this.state = useState({ isOpen: false });
+
+        // Close dropdown when clicking anywhere outside this component
+        useExternalListener(window, "click", (ev) => {
+            if (this.state.isOpen && this.rootRef.el && !this.rootRef.el.contains(ev.target)) {
+                this.state.isOpen = false;
+            }
+        });
     }
 
-    // Returns an array of enabled debug modes based on General Settings
     get activeModes() {
         const config = session.fast_devtools || {};
         const modes = [];
@@ -19,24 +25,19 @@ export class SystrayDebugToggle extends Component {
         return modes;
     }
 
-    // Checks if we need to show a dropdown (more than 1 option enabled)
     get isMultiple() {
         return this.activeModes.length > 1;
     }
 
-    // Gets the current debug value from the URL
     get currentDebug() {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get('debug');
     }
 
-    // Handles the click on the main Systray button
     toggleAction() {
         if (this.isMultiple) {
-            // Toggle dropdown
             this.state.isOpen = !this.state.isOpen;
         } else {
-            // Directly toggle the only available mode
             const modes = this.activeModes;
             if (modes.length === 1) {
                 this.setDebug(modes[0].val);
@@ -44,16 +45,14 @@ export class SystrayDebugToggle extends Component {
         }
     }
 
-    // Applies or removes the debug parameter and reloads
     setDebug(modeVal) {
+        this.state.isOpen = false;
         const url = new URL(window.location.href);
         const current = url.searchParams.get('debug');
         
         if (current === modeVal) {
-            // Disable if it's already active
             url.searchParams.delete('debug');
         } else {
-            // Enable the selected mode
             url.searchParams.set('debug', modeVal);
         }
         window.location.href = url.toString();
