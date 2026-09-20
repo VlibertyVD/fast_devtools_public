@@ -1,6 +1,6 @@
 {
     'name': 'Fast DevTools',
-    'version': '19.0.1.0.0',
+    'version': '18.0.1.0.0',
     'summary': 'Developer tools for Systray: Debug toggle and Module Updater',
     'category': 'Technical Tools',
     'depends': ['base', 'web'],
